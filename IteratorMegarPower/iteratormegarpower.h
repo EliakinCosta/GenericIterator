@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QList>
 #include <aluno.h>
+#include <QtAlgorithms>
 
 template<typename typeObject>
 class IteratorMegarPower
@@ -26,7 +27,9 @@ public:
 
     virtual ~IteratorMegarPower()
     {
-        delete []m_collection;
+        qDeleteAll(this->m_collection->begin(), this->m_collection->end());
+        this->m_collection->clear();
+        delete this->m_next;
     }
 
     bool hasNext()
