@@ -4,22 +4,20 @@
 #include <QObject>
 #include <QMetaProperty>
 #include <QMetaObject>
-#include <QDebug>
-#include <QList>
 #include <aluno.h>
 #include <QtAlgorithms>
+#include <QDebug>
+#include <QList>
 
-template<typename typeObject>
+template<class typeCollection>
 class IteratorMegarPower
 {
-    typedef char(Aluno::*FPtr)();
 public:
-    IteratorMegarPower(QList<typeObject*> *collection, FPtr ptr, QString propertyName, QString operation, QString value):
+    IteratorMegarPower(typeCollection *collection, QString propertyName, QString operation, QString value):
         m_collection(collection),
         m_propertyName(propertyName),
         m_operation(operation),
         m_value(value),
-        m_ptr(ptr),
         m_next(0)
     {
         this->m_iterator = this->m_collection->begin();
@@ -36,10 +34,27 @@ public:
     {
         while(this->m_iterator != this->m_collection->end())
         {
+            char temp;
+            QMetaObject::invokeMethod(*this->m_iterator, this->m_propertyName.toStdString().c_str(), Qt::DirectConnection,  Q_RETURN_ARG(char, temp));
             if(this->m_operation.compare("==")==0)
             {
-                if(QString(((*this->m_iterator)->*this->m_ptr)()).compare(this->m_value)==0)
-                {
+                if(QString(temp).compare(this->m_value)==0){
+                    this->m_next = *this->m_iterator;
+                    ++this->m_iterator;
+                    return true;
+                }
+            }
+            else if(this->m_operation.compare("<")==0)
+            {
+                if(QString(temp).compare(this->m_value)<0){
+                    this->m_next = *this->m_iterator;
+                    ++this->m_iterator;
+                    return true;
+                }
+            }
+            else if(this->m_operation.compare(">")==0)
+            {
+                if(QString(temp).compare(this->m_value)>0){
                     this->m_next = *this->m_iterator;
                     ++this->m_iterator;
                     return true;
@@ -50,18 +65,17 @@ public:
         return false;
     }
 
-    typeObject *next()
+    QObject *next()
     {
         return this->m_next;
     }
 private:
-    QList<typeObject*> *m_collection;
+    typeCollection *m_collection;
     QString m_propertyName;
     QString m_operation;
     QString m_value;
-    FPtr m_ptr;
-    typename QList<typeObject *>::iterator m_iterator;
-    typeObject *m_next;
+    typename typeCollection::iterator m_iterator;
+    QObject *m_next;
 };
 
 #endif // ITERATORMEGARPOWER_H
