@@ -13,7 +13,7 @@ template<class typeCollection>
 class IteratorMegarPower
 {
 public:
-    IteratorMegarPower(typeCollection *collection, QString propertyName, QString operation, QString value):
+    IteratorMegarPower(typeCollection *collection, QString propertyName, QString operation, QString value) :
         m_collection(collection),
         m_propertyName(propertyName),
         m_operation(operation),
@@ -34,11 +34,10 @@ public:
     {
         while(this->m_iterator != this->m_collection->end())
         {
-            char temp;
-            QMetaObject::invokeMethod(*this->m_iterator, this->m_propertyName.toStdString().c_str(), Qt::DirectConnection,  Q_RETURN_ARG(char, temp));
+            QString temp = (*this->m_iterator)->property(this->m_propertyName.toLatin1()).toString();
             if(this->m_operation.compare("==")==0)
             {
-                if(QString(temp).compare(this->m_value)==0){
+                if(temp.compare(this->m_value)==0){
                     this->m_next = *this->m_iterator;
                     ++this->m_iterator;
                     return true;
@@ -46,7 +45,7 @@ public:
             }
             else if(this->m_operation.compare("<")==0)
             {
-                if(QString(temp).compare(this->m_value)<0){
+                if(temp.compare(this->m_value)<0){
                     this->m_next = *this->m_iterator;
                     ++this->m_iterator;
                     return true;
@@ -54,7 +53,7 @@ public:
             }
             else if(this->m_operation.compare(">")==0)
             {
-                if(QString(temp).compare(this->m_value)>0){
+                if(temp.compare(this->m_value)>0){
                     this->m_next = *this->m_iterator;
                     ++this->m_iterator;
                     return true;

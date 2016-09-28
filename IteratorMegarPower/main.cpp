@@ -1,11 +1,12 @@
 #include <QCoreApplication>
-#include <aluno.h>
-#include <iteratormegarpower.h>
 #include <QList>
 #include <QString>
 #include <QDebug>
 #include <QMetaObject>
 #include <QMetaProperty>
+
+#include "aluno.h"
+#include "iteratormegarpower.h"
 
 int main(int argc, char *argv[])
 {
@@ -20,17 +21,12 @@ int main(int argc, char *argv[])
     listaAlunos->append(caio);
     listaAlunos->append(jamile);
 
-    IteratorMegarPower<QList<QObject *>> iterator(listaAlunos, QString("sexo"), QString(">"), QString("F"));
+    IteratorMegarPower<QList<QObject *>> iterator(listaAlunos, QStringLiteral("sexo"), QStringLiteral("=="), QStringLiteral("F"));
 
 
     while(iterator.hasNext())
-    {
-        QString nome;
-        QMetaObject::invokeMethod(iterator.next(), "nome", Qt::DirectConnection,  Q_RETURN_ARG(QString, nome));
-        qDebug() << nome;
-    }
+        qDebug() << iterator.next()->property("nome").toString();
 
+    qDeleteAll(listaAlunos->cbegin(), listaAlunos->cend());
     delete listaAlunos;
-
-    return a.exec();
 }
