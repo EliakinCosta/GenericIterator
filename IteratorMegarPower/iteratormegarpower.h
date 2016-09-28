@@ -34,12 +34,12 @@ public:
     {
         while(this->m_iterator != this->m_collection->end())
         {
-            QString temp = (*this->m_iterator)->property(this->m_propertyName.toLatin1()).toString();
-            if(this->m_operation.compare("==")==0)
+            QString temp = (*m_iterator)->property(this->m_propertyName.toLatin1()).toString();
+            if (m_operation == QStringLiteral("=="))
             {
-                if(temp.compare(this->m_value)==0){
-                    this->m_next = *this->m_iterator;
-                    ++this->m_iterator;
+                if(temp.compare(m_value)==0){
+                    m_next = *m_iterator;
+                    ++m_iterator;
                     return true;
                 }
             }
